@@ -69,7 +69,7 @@ async function verifyUninstallEntry(api: types.IExtensionApi): Promise<types.ITe
 }
 
 function init(context: types.IExtensionContext) {
-  if (process.platform === 'win32') {
+  if ((process.platform === 'win32') && (process.env.NODE_ENV !== 'development')) {
     context.registerTest('uninstall-entry', 'startup',
       () => Bluebird.resolve(verifyUninstallEntry(context.api)));
   }
