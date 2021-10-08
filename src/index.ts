@@ -1,4 +1,4 @@
-import * as Bluebird from 'bluebird';
+import Bluebird from 'bluebird';
 import * as path from 'path';
 import { log, types, util } from 'vortex-api';
 import * as winapi from 'winapi-bindings';
