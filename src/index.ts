@@ -11,11 +11,17 @@ const UUID = '57979c68-f490-55b8-8fed-8b017a5af2fe';
 async function verifyUninstallEntry(api: types.IExtensionApi): Promise<types.ITestResult> {
   const t = api.translate;
 
+  if (api.getState().app['installType'] === 'managed') {
+    // this verification only makes sense if we're using our own installer
+    return Promise.resolve(undefined);
+  }
+
   let invalid: string;
   let extra: string;
   try {
-    winapi.WithRegOpen('HKEY_LOCAL_MACHINE',
-                       `SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\${UUID}`,
+    winapi.WithRegOpen(
+      'HKEY_LOCAL_MACHINE',
+      `SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\${UUID}`,
       hkey => {
         const uninstallString = winapi.RegGetValue(hkey, '', 'UninstallString');
         if ((uninstallString === undefined) || (uninstallString.type !== 'REG_SZ')) {
@@ -62,6 +68,8 @@ async function verifyUninstallEntry(api: types.IExtensionApi): Promise<types.ITe
         long,
       },
     });
+  } else {
+    return Promise.resolve(undefined);
   }
 }
 
